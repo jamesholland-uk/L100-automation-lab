@@ -1,6 +1,6 @@
 # Create the Resource Group.
 resource "azurerm_resource_group" "this" {
-  name     = coalesce(var.resource_group_name, "${var.name_prefix}vmseries")
+  name     = coalesce("${var.name_prefix}${var.resource_group_name}", var.resource_group_name)
   location = var.location
 }
 
