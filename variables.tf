@@ -1,6 +1,6 @@
 variable "location" {
   description = "The Azure region to use."
-  default     = "East US 2"
+  default     = "UK South"
   type        = string
 }
 

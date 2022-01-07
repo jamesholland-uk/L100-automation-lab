@@ -1,6 +1,6 @@
 # Create the Resource Group.
 resource "azurerm_resource_group" "this" {
-  name     = coalesce("${var.name_prefix}${var.resource_group_name}", var.resource_group_name)
+  name     = coalesce("${terraform.workspace}-${var.name_prefix}${var.resource_group_name}", "${terraform.workspace}-$var.resource_group_name")
   location = var.location
 }
 

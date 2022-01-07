@@ -1,4 +1,4 @@
-location             = "East US 2"
+location             = "UK South"
 resource_group_name  = "l100-rg"
 virtual_network_name = "vnet-vmseries"
 address_space        = ["10.110.0.0/16"]
@@ -11,8 +11,7 @@ network_security_groups = {
 }
 
 allow_inbound_mgmt_ips = [
-  "1.1.1.1", # Put your own public IP address here
-  "10.255.0.0/24", # Example Panorama access
+  "0.0.0.0/0" # Example wide open access
 ]
 
 route_tables = {
@@ -45,4 +44,3 @@ subnets = {
 
 vmseries_version = "10.1.3"
 vmseries_sku     = "byol"
-
