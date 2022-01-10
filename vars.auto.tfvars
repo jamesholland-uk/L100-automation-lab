@@ -26,6 +26,11 @@ route_tables = {
   }
 }
 
+bootstrap_files = {
+  "bootstrap/config/init-cfg.txt" = "config/init-cfg.txt"
+  "bootstrap/config/bootstrap.xml" = "config/bootstrap.xml"
+}
+
 subnets = {
   "subnet-mgmt" = {
     address_prefixes       = ["10.110.255.0/24"]

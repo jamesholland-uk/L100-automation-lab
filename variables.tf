@@ -28,6 +28,16 @@ variable "password" {
   type        = string
 }
 
+variable "bootstrap_storage_account_name" {
+  description = "Name of storage account used for bootstrap package."
+  default     = "bootstrap"
+  type        = string
+}
+
+variable "bootstrap_files" {
+  description = "Map of files which will copied into the bootstrap storage"
+  default     = {}
+}
 
 variable "virtual_network_name" {
   description = "The name of the VNet to create."

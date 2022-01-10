@@ -9,9 +9,19 @@ resource "random_password" "this" {
   length           = 16
   min_lower        = 16 - 4
   min_numeric      = 1
-  min_special      = 1
   min_upper        = 1
-  override_special = "_%@"
+  special = false
+}
+
+# Create a bootstrap package to provide a base PAN-OS configration.
+module "bootstrap" {
+  source = "PaloAltoNetworks/vmseries-modules/azurerm//modules/bootstrap"
+  version = "0.2.0"
+
+  resource_group_name  = azurerm_resource_group.this.name
+  location             = azurerm_resource_group.this.location
+  storage_account_name = "${terraform.workspace}${var.bootstrap_storage_account_name}"
+  files                = var.bootstrap_files
 }
 
 # Create the network required for the topology.
@@ -46,6 +56,7 @@ resource "azurerm_network_security_rule" "mgmt" {
   depends_on = [module.vnet]
 }
 
+# Build the VM-Series firewall.
 module "vmseries" {
   source  = "PaloAltoNetworks/vmseries-modules/azurerm//modules/vmseries"
   version = "0.2.0"
@@ -59,6 +70,8 @@ module "vmseries" {
   img_version         = var.vmseries_version
   img_sku             = var.vmseries_sku
   vm_size             = var.vmseries_vm_size
+  bootstrap_storage_account = module.bootstrap.storage_account
+  bootstrap_share_name      = module.bootstrap.storage_share.name
   tags                = var.vmseries_tags
   enable_zones        = var.enable_zones
   interfaces = [
@@ -66,6 +79,17 @@ module "vmseries" {
       name                = "fw-mgmt"
       subnet_id           = lookup(module.vnet.subnet_ids, "subnet-mgmt", null)
       create_public_ip    = true
+      enable_backend_pool = false
+    },
+    {
+      name                = "public-interface"
+      subnet_id           = lookup(module.vnet.subnet_ids, "subnet-public", null)
+      create_public_ip    = true
+      enable_backend_pool = false
+    },
+    {
+      name                = "inside-interface"
+      subnet_id           = lookup(module.vnet.subnet_ids, "subnet-private", null)
       enable_backend_pool = false
     },
     # {
@@ -87,7 +111,7 @@ module "vmseries" {
   ]
 }
 
-
+# Build the Linux host for performing activities.
 module "mgmt_host" {
   source = "github.com/PaloAltoNetworks/terraform-azurerm-vmseries-modules//modules/virtual_machine?ref=develop"
   # version = "0.2.0"
