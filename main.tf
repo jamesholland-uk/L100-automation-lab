@@ -92,22 +92,6 @@ module "vmseries" {
       subnet_id           = lookup(module.vnet.subnet_ids, "subnet-private", null)
       enable_backend_pool = false
     },
-    # {
-    #   name                 = "${each.key}-public"
-    #   subnet_id            = lookup(module.vnet.subnet_ids, "subnet-public", null)
-    #   public_ip_address_id = azurerm_public_ip.public[each.key].id
-    #   lb_backend_pool_id   = module.inbound_lb.backend_pool_id
-    #   enable_backend_pool  = true
-    # },
-    # {
-    #   name                = "${each.key}-private"
-    #   subnet_id           = lookup(module.vnet.subnet_ids, "subnet-private", null)
-    #   lb_backend_pool_id  = module.outbound_lb.backend_pool_id
-    #   enable_backend_pool = true
-
-    #   # Optional static private IP
-    #   private_ip_address = try(each.value.trust_private_ip, null)
-    # },
   ]
 }
 
@@ -122,6 +106,9 @@ module "mgmt_host" {
   avzone              = 1
   username            = var.username
   password            = coalesce(var.password, random_password.this.result)
+  img_publisher       = "Canonical"
+  img_offer           = "0001-com-ubuntu-server-focal"
+  img_sku             = "20_04-lts"
   vm_os_simple        = "UbuntuServer"
   enable_zones        = var.enable_zones
   interfaces = [
@@ -135,4 +122,3 @@ module "mgmt_host" {
 
   custom_data = base64encode(templatefile("./scripts/install_tools.sh", { terraform_version = "1.1.0" }))
 }
-
