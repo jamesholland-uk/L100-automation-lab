@@ -34,7 +34,7 @@ sudo -u panadmin ansible-galaxy collection install paloaltonetworks.panos >> $lo
 printf "***** download Terraform *****" >> $logfile
 wget https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip -O /tmp/terraform.zip >> $logfile
 printf "***** apt installs *****" >> $logfile
-apt-get install unzip -y >> $logfile
+apt-get install unzip libxml2-utils -y >> $logfile
 printf "***** unzip Terraform *****" >> $logfile
 sudo unzip /tmp/terraform.zip -d /usr/local/bin >> $logfile
 printf "***** make Terraform executable *****" >> $logfile
