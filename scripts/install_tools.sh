@@ -9,6 +9,9 @@ printf "***** START *****" >> $logfile
 # - Ansible
 # - Terraform
 
+# Curl mod, add newline characater after output
+sudo -u panadmin echo '-w "\n"' >> /home/panadmin/.curlrc
+
 # Install Ansible
 printf "***** apt update *****" >> $logfile
 apt-get update >> $logfile
